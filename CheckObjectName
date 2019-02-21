@@ -1,0 +1,9 @@
+Sub CheckObjName()
+
+Dim obj As Shape
+
+For Each obj In ActiveSheet.Shapes
+    sWrite = obj.Name & "; height: " & obj.Height & "; width: " & obj.Width
+    MsgBox (sWrite)
+Next obj
+End Sub
