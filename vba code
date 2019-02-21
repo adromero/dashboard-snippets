@@ -1,0 +1,104 @@
+Sub CopyToPPT()
+
+    Dim PPApp As PowerPoint.Application
+    Dim PPPres As PowerPoint.Presentation
+    Dim PPSlide As PowerPoint.Slide
+    Dim PresentationFileName As Variant
+    Dim SlideCount As Long
+    Dim iCht As Integer
+
+        Set PPApp = CreateObject("Powerpoint.Application")
+    
+        PPApp.Visible = True
+    
+        ' Create a presentation
+        Set PPPres = PPApp.Presentations.Add
+        Set PPPres = PPApp.ActivePresentation
+        ' Some PowerPoint actions work best in normal slide view
+        PPApp.ActiveWindow.ViewType = ppViewSlide
+    
+        ' Add first slide to presentation
+        Set PPSlide = PPPres.Slides.Add(1, ppLayoutTitleOnly)
+    
+    For iCht = 1 To ActiveSheet.ChartObjects.Count
+        ' copy chart as a picture
+        ActiveSheet.ChartObjects(iCht).Chart.CopyPicture _
+            Appearance:=xlScreen, Size:=xlScreen, Format:=xlPicture
+    
+        ' Add a new slide and paste in the chart
+        SlideCount = PPPres.Slides.Count
+        Set PPSlide = PPPres.Slides.Add(SlideCount + 1, ppLayoutBlank)
+        PPApp.ActiveWindow.View.GotoSlide PPSlide.SlideIndex
+        With PPSlide
+            ' paste and select the chart picture
+            .Shapes.Paste.Select
+            ' Resize
+            PPApp.ActiveWindow.Selection.ShapeRange.ScaleWidth 1.2, msoFalse
+            PPApp.ActiveWindow.Selection.ShapeRange.ScaleHeight 2.2, msoFalse
+            ' align the chart
+            PPApp.ActiveWindow.Selection.ShapeRange.Align msoAlignCenters, True
+            PPApp.ActiveWindow.Selection.ShapeRange.Align msoAlignMiddles, True
+        End With
+
+    Next
+
+    ' Clean up
+    Set PPSlide = Nothing
+    Set PPPres = Nothing
+    Set PPApp = Nothing
+End Sub
+
+Sub CopyShpPPT()
+
+
+    Dim PPApp As PowerPoint.Application
+    Dim PPPres As PowerPoint.Presentation
+    Dim PPSlide As PowerPoint.Slide
+    Dim PresentationFileName As Variant
+    Dim SlideCount As Long
+    Dim iCht As Integer
+
+    'On Error GoTo Errorcatch
+    
+        Set PPApp = CreateObject("Powerpoint.Application")
+    
+        PPApp.Visible = True
+    
+        ' Create a presentation
+        Set PPPres = PPApp.Presentations.Add
+        Set PPPres = PPApp.ActivePresentation
+        ' Some PowerPoint actions work best in normal slide view
+        PPApp.ActiveWindow.ViewType = ppViewSlide
+    
+        ' Add first slide to presentation
+        Set PPSlide = PPPres.Slides.Add(1, ppLayoutTitleOnly)
+    
+    'For iCht = 1 To ActiveSheet.ChartObjects.Count
+        ' copy chart as a picture
+        ActiveSheet.Shapes("SampleComp").Copy
+        ' Add a new slide and paste in the chart
+        SlideCount = PPPres.Slides.Count
+        Set PPSlide = PPPres.Slides.Add(SlideCount + 1, ppLayoutBlank)
+        PPApp.ActiveWindow.View.GotoSlide PPSlide.SlideIndex
+        With PPSlide
+            ' paste and select the chart picture
+            .Shapes.Paste.Select
+            ' Resize
+            PPApp.ActiveWindow.Selection.ShapeRange.ScaleWidth 0.75, msoFalse
+            PPApp.ActiveWindow.Selection.ShapeRange.ScaleHeight 0.75, msoFalse
+            ' align the chart
+            PPApp.ActiveWindow.Selection.ShapeRange.Align msoAlignCenters, True
+            PPApp.ActiveWindow.Selection.ShapeRange.Align msoAlignMiddles, True
+        End With
+
+    'Next
+
+    ' Clean up
+    Set PPSlide = Nothing
+    Set PPPres = Nothing
+    Set PPApp = Nothing
+
+'Errorcatch:
+'MsgBox "Error is: " + Err.Description
+
+End Sub
