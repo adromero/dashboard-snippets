@@ -1,5 +1,7 @@
 Sub CopyToPPT()
 
+    ' Set a VBE reference to Microsoft PowerPoint Object Library
+
     Dim PPApp As PowerPoint.Application
     Dim PPPres As PowerPoint.Presentation
     Dim PPSlide As PowerPoint.Slide
@@ -7,8 +9,11 @@ Sub CopyToPPT()
     Dim SlideCount As Long
     Dim iCht As Integer
 
+        ' Create instance of PowerPoint
         Set PPApp = CreateObject("Powerpoint.Application")
     
+        ' For automation to work, PowerPoint must be visible
+        ' (alternatively, other extraordinary measures must be taken)
         PPApp.Visible = True
     
         ' Create a presentation
@@ -33,8 +38,8 @@ Sub CopyToPPT()
             ' paste and select the chart picture
             .Shapes.Paste.Select
             ' Resize
-            PPApp.ActiveWindow.Selection.ShapeRange.ScaleWidth 1.2, msoFalse
-            PPApp.ActiveWindow.Selection.ShapeRange.ScaleHeight 2.2, msoFalse
+            'PPApp.ActiveWindow.Selection.ShapeRange.ScaleWidth 1.2, msoFalse
+            'PPApp.ActiveWindow.Selection.ShapeRange.ScaleHeight 2.2, msoFalse
             ' align the chart
             PPApp.ActiveWindow.Selection.ShapeRange.Align msoAlignCenters, True
             PPApp.ActiveWindow.Selection.ShapeRange.Align msoAlignMiddles, True
@@ -50,6 +55,7 @@ End Sub
 
 Sub CopyShpPPT()
 
+    ' Set a VBE reference to Microsoft PowerPoint Object Library
 
     Dim PPApp As PowerPoint.Application
     Dim PPPres As PowerPoint.Presentation
@@ -60,8 +66,11 @@ Sub CopyShpPPT()
 
     'On Error GoTo Errorcatch
     
+        ' Create instance of PowerPoint
         Set PPApp = CreateObject("Powerpoint.Application")
     
+        ' For automation to work, PowerPoint must be visible
+        ' (alternatively, other extraordinary measures must be taken)
         PPApp.Visible = True
     
         ' Create a presentation
@@ -84,8 +93,67 @@ Sub CopyShpPPT()
             ' paste and select the chart picture
             .Shapes.Paste.Select
             ' Resize
-            PPApp.ActiveWindow.Selection.ShapeRange.ScaleWidth 0.75, msoFalse
-            PPApp.ActiveWindow.Selection.ShapeRange.ScaleHeight 0.75, msoFalse
+            'PPApp.ActiveWindow.Selection.ShapeRange.ScaleWidth 0.75, msoFalse
+            'PPApp.ActiveWindow.Selection.ShapeRange.ScaleHeight 0.75, msoFalse
+            ' align the chart
+            PPApp.ActiveWindow.Selection.ShapeRange.Align msoAlignCenters, True
+            PPApp.ActiveWindow.Selection.ShapeRange.Align msoAlignMiddles, True
+        End With
+
+    'Next
+
+    ' Clean up
+    Set PPSlide = Nothing
+    Set PPPres = Nothing
+    Set PPApp = Nothing
+
+'Errorcatch:
+'MsgBox "Error is: " + Err.Description
+
+End Sub
+
+Sub CopyTblPPT()
+
+    ' Set a VBE reference to Microsoft PowerPoint Object Library
+
+    Dim PPApp As PowerPoint.Application
+    Dim PPPres As PowerPoint.Presentation
+    Dim PPSlide As PowerPoint.Slide
+    Dim PresentationFileName As Variant
+    Dim SlideCount As Long
+    Dim iCht As Integer
+
+    'On Error GoTo Errorcatch
+    
+        ' Create instance of PowerPoint
+        Set PPApp = CreateObject("Powerpoint.Application")
+    
+        ' For automation to work, PowerPoint must be visible
+        ' (alternatively, other extraordinary measures must be taken)
+        PPApp.Visible = True
+    
+        ' Create a presentation
+        Set PPPres = PPApp.Presentations.Add
+        Set PPPres = PPApp.ActivePresentation
+        ' Some PowerPoint actions work best in normal slide view
+        PPApp.ActiveWindow.ViewType = ppViewSlide
+    
+        ' Add first slide to presentation
+        Set PPSlide = PPPres.Slides.Add(1, ppLayoutTitleOnly)
+    
+    'For iCht = 1 To ActiveSheet.ChartObjects.Count
+        ' copy chart as a picture
+        ActiveSheet.ListObjects("Table1").Range.Copy
+        ' Add a new slide and paste in the chart
+        SlideCount = PPPres.Slides.Count
+        Set PPSlide = PPPres.Slides.Add(SlideCount + 1, ppLayoutBlank)
+        PPApp.ActiveWindow.View.GotoSlide PPSlide.SlideIndex
+        With PPSlide
+            ' paste and select the chart picture
+            .Shapes.Paste.Select
+            ' Resize
+            'PPApp.ActiveWindow.Selection.ShapeRange.ScaleWidth 0.75, msoFalse
+            'PPApp.ActiveWindow.Selection.ShapeRange.ScaleHeight 0.75, msoFalse
             ' align the chart
             PPApp.ActiveWindow.Selection.ShapeRange.Align msoAlignCenters, True
             PPApp.ActiveWindow.Selection.ShapeRange.Align msoAlignMiddles, True
